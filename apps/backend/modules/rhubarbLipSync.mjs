@@ -1,22 +1,40 @@
-import { execCommand } from "../utils/files.mjs";
+import { exec } from "child_process";
+import { join } from "path";
 
-const getPhonemes = async ({ message }) => {
-  try {
-    const time = new Date().getTime();
-    console.log(`Starting conversion for message ${message}`);
-    await execCommand(
-      { command: `ffmpeg -y -i audios/message_${message}.mp3 audios/message_${message}.wav` }
-      // -y to overwrite the file
-    );
-    console.log(`Conversion done in ${new Date().getTime() - time}ms`);
-    await execCommand({
-      command: `./bin/rhubarb -f json -o audios/message_${message}.json audios/message_${message}.wav -r phonetic`,
+export async function getPhonemes({ message }) {
+  const isWindows = process.platform === "win32";
+  const rhubarbPath = isWindows ? join("bin", "rhubarb.exe") : "./bin/rhubarb";
+  const inputMp3 = join("Audios", `message_${message}.mp3`);
+  const inputWav = join("Audios", `message_${message}.wav`);
+  const outputJson = join("Audios", `message_${message}.json`);
+
+  console.log(`🎵 [ffmpeg] Conversion MP3 → WAV : ${inputMp3} → ${inputWav}`);
+
+  // Étape 1 : convertir mp3 → wav
+  await new Promise((resolve, reject) => {
+    const ffmpegCommand = `ffmpeg -y -i "${inputMp3}" "${inputWav}"`;
+    exec(ffmpegCommand, (Erreur, stdout, stderr) => {
+      if (Erreur) {
+        console.Erreur(`❌ [ffmpeg] Erreur : ${Erreur.message}`);
+        return reject(Erreur);
+      }
+      console.log(`✅ [ffmpeg] Conversion terminée : ${inputWav}`);
+      resolve();
     });
-    // -r phonetic is faster but less accurate
-    console.log(`Lip sync done in ${new Date().getTime() - time}ms`);
-  } catch (error) {
-    console.error(`Error while getting phonemes for message ${message}:`, error);
-  }
-};
+  });
 
-export { getPhonemes };
+  // Étape 2 : exécuter Rhubarb
+  const rhubarbCommand = `${rhubarbPath} -f json -o "${outputJson}" "${inputWav}" -r phonetic`;
+  console.log(`🎬 [Rhubarb] Commande : ${rhubarbCommand}`);
+
+  return new Promise((resolve, reject) => {
+    exec(rhubarbCommand, (Erreur, stdout, stderr) => {
+      if (Erreur) {
+        console.Erreur(`❌ [Rhubarb] Erreur : ${Erreur.message}`);
+        return reject(Erreur);
+      }
+      console.log(`✅ [Rhubarb] Phonèmes générés : ${outputJson}`);
+      resolve(stdout);
+    });
+  });
+}

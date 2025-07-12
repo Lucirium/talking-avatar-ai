@@ -2,14 +2,14 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const backendUrl = "http://localhost:3000";
 
-const SpeechContext = createContext();
+const VoixContext = createContext();
 
-export const SpeechProvider = ({ children }) => {
+export const VoixProvider = ({ children }) => {
   const [recording, setRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState();
-  const [loading, setLoading] = useState(false);
+  const [chargement, setChargement] = useState(false);
 
   let chunks = [];
 
@@ -26,7 +26,7 @@ export const SpeechProvider = ({ children }) => {
     reader.readAsDataURL(audioBlob);
     reader.onloadend = async function () {
       const base64Audio = reader.result.split(",")[1];
-      setLoading(true);
+      setChargement(true);
       try {
         const data = await fetch(`${backendUrl}/sts`, {
           method: "POST",
@@ -35,12 +35,12 @@ export const SpeechProvider = ({ children }) => {
           },
           body: JSON.stringify({ audio: base64Audio }),
         });
-        const response = (await data.json()).messages;
-        setMessages((messages) => [...messages, ...response]);
-      } catch (error) {
-        console.error(error);
+        const reponse = (await data.json()).messages;
+        setMessages((messages) => [...messages, ...reponse]);
+      } catch (erreur) {
+        console.error(erreur);
       } finally {
-        setLoading(false);
+        setChargement(false);
       }
     };
   };
@@ -57,14 +57,14 @@ export const SpeechProvider = ({ children }) => {
             const audioBlob = new Blob(chunks, { type: "audio/webm" });
             try {
               await sendAudioData(audioBlob);
-            } catch (error) {
-              console.error(error);
-              alert(error.message);
+            } catch (erreur) {
+              console.error(erreur);
+              alert(erreur.message);
             }
           };
           setMediaRecorder(newMediaRecorder);
         })
-        .catch((err) => console.error("Error accessing microphone:", err));
+        .catch((err) => console.error("Erreur accès micro :", err));
     }
   }, []);
 
@@ -83,7 +83,7 @@ export const SpeechProvider = ({ children }) => {
   };
 
   const tts = async (message) => {
-    setLoading(true);
+    setChargement(true);
     try {
       const data = await fetch(`${backendUrl}/tts`, {
         method: "POST",
@@ -92,12 +92,12 @@ export const SpeechProvider = ({ children }) => {
         },
         body: JSON.stringify({ message }),
       });
-      const response = (await data.json()).messages;
-      setMessages((messages) => [...messages, ...response]);
-    } catch (error) {
-      console.error(error);
+      const reponse = (await data.json()).messages;
+      setMessages((messages) => [...messages, ...reponse]);
+    } catch (erreur) {
+      console.error(erreur);
     } finally {
-      setLoading(false);
+      setChargement(false);
     }
   };
 
@@ -114,7 +114,7 @@ export const SpeechProvider = ({ children }) => {
   }, [messages]);
 
   return (
-    <SpeechContext.Provider
+    <VoixContext.Provider
       value={{
         startRecording,
         stopRecording,
@@ -122,18 +122,18 @@ export const SpeechProvider = ({ children }) => {
         tts,
         message,
         onMessagePlayed,
-        loading,
+        chargement,
       }}
     >
       {children}
-    </SpeechContext.Provider>
+    </VoixContext.Provider>
   );
 };
 
-export const useSpeech = () => {
-  const context = useContext(SpeechContext);
+export const useVoix = () => {
+  const context = useContext(VoixContext);
   if (!context) {
-    throw new Error("useSpeech must be used within a SpeechProvider");
+    throw new Error("useVoix doit être utilisé dans un VoixProvider");
   }
   return context;
 };

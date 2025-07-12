@@ -1,13 +1,13 @@
 import { useRef } from "react";
-import { useSpeech } from "../hooks/useSpeech";
+import { useVoix } from "../hooks/useVoix";
 
 export const ChatInterface = ({ hidden, ...props }) => {
   const input = useRef();
-  const { tts, loading, message, startRecording, stopRecording, recording } = useSpeech();
+  const { tts, Chargement, message, startRecording, stopRecording, recording } = useVoix();
 
   const sendMessage = () => {
     const text = input.current.value;
-    if (!loading && !message) {
+    if (!Chargement && !message) {
       tts(text);
       input.current.value = "";
     }
@@ -21,7 +21,7 @@ export const ChatInterface = ({ hidden, ...props }) => {
       <div className="self-start backdrop-blur-md bg-white bg-opacity-50 p-4 rounded-lg">
         <h1 className="font-black text-xl text-gray-700">Digital Human</h1>
         <p className="text-gray-600">
-          {loading ? "Loading..." : "Type a message and press enter to chat with the AI."}
+          {Chargement ? "Chargement..." : "Type a message and press enter to chat with the AI."}
         </p>
       </div>
       <div className="w-full flex flex-col items-end justify-center gap-4"></div>
@@ -30,7 +30,7 @@ export const ChatInterface = ({ hidden, ...props }) => {
           onClick={recording ? stopRecording : startRecording}
           className={`bg-gray-500 hover:bg-gray-600 text-white p-4 px-4 font-semibold uppercase rounded-md ${
             recording ? "bg-red-500 hover:bg-red-600" : ""
-          } ${loading || message ? "cursor-not-allowed opacity-30" : ""}`}
+          } ${Chargement || message ? "cursor-not-allowed opacity-30" : ""}`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -59,10 +59,10 @@ export const ChatInterface = ({ hidden, ...props }) => {
           }}
         />
         <button
-          disabled={loading || message}
+          disabled={Chargement || message}
           onClick={sendMessage}
           className={`bg-gray-500 hover:bg-gray-600 text-white p-4 px-10 font-semibold uppercase rounded-md ${
-            loading || message ? "cursor-not-allowed opacity-30" : ""
+            Chargement || message ? "cursor-not-allowed opacity-30" : ""
           }`}
         >
           Send

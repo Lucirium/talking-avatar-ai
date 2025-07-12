@@ -4,7 +4,7 @@ import { button, useControls } from "leva";
 import React, { useEffect, useRef, useState } from "react";
 
 import * as THREE from "three";
-import { useSpeech } from "../hooks/useSpeech";
+import { useVoix } from "../hooks/useVoix";
 import facialExpressions from "../constants/facialExpressions";
 import visemesMapping from "../constants/visemesMapping";
 import morphTargets from "../constants/morphTargets";
@@ -12,7 +12,7 @@ import morphTargets from "../constants/morphTargets";
 export function Avatar(props) {
   const { nodes, materials, scene } = useGLTF("/models/avatar.glb");
   const { animations } = useGLTF("/models/animations.glb");
-  const { message, onMessagePlayed } = useSpeech();
+  const { message, onMessagePlayed } = useVoix();
   const [lipsync, setLipsync] = useState();
   const [setupMode, setSetupMode] = useState(false);
 
@@ -24,10 +24,10 @@ export function Avatar(props) {
     setAnimation(message.animation);
     setFacialExpression(message.facialExpression);
     setLipsync(message.lipsync);
-    const audio = new Audio("data:audio/mp3;base64," + message.audio);
-    audio.play();
-    setAudio(audio);
-    audio.onended = onMessagePlayed;
+    const Audio = new Audio("data:Audio/mp3;base64," + message.Audio);
+    Audio.play();
+    setAudio(Audio);
+    Audio.onended = onMessagePlayed;
   }, [message]);
 
 
@@ -62,7 +62,7 @@ export function Avatar(props) {
 
   const [blink, setBlink] = useState(false);
   const [facialExpression, setFacialExpression] = useState("");
-  const [audio, setAudio] = useState();
+  const [Audio, setAudio] = useState();
 
   useFrame(() => {
     !setupMode &&
@@ -87,7 +87,7 @@ export function Avatar(props) {
 
     const appliedMorphTargets = [];
     if (message && lipsync) {
-      const currentAudioTime = audio.currentTime;
+      const currentAudioTime = Audio.currentTime;
       for (let i = 0; i < lipsync.mouthCues.length; i++) {
         const mouthCue = lipsync.mouthCues[i];
         if (currentAudioTime >= mouthCue.start && currentAudioTime <= mouthCue.end) {

@@ -1,61 +1,85 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import getPort from 'get-port';
 import { openAIChain, parser } from "./modules/openAI.mjs";
 import { lipSync } from "./modules/lip-sync.mjs";
-import { sendDefaultMessages, defaultResponse } from "./modules/defaultMessages.mjs";
-import { convertAudioToText } from "./modules/whisper.mjs";
+import { sendDefaultMessages, defaultRéponse } from "./modules/defaultMessages.mjs";
+import { convertAudioToText } from "./modules/Whisper.mjs";
 
 dotenv.config();
 
-const elevenLabsApiKey = process.env.ELEVEN_LABS_API_KEY;
-
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
 app.use(cors());
-const port = 3000;
-
-app.get("/voices", async (req, res) => {
-  res.send(await voice.getVoices(elevenLabsApiKey));
-});
 
 app.post("/tts", async (req, res) => {
-  const userMessage = await req.body.message;
-  const defaultMessages = await sendDefaultMessages({ userMessage });
+  const messageUtilisateur = req.body.message;
+  console.log(`🗣️ Message reçu : ${messageUtilisateur}`);
+
+  const defaultMessages = await sendDefaultMessages({ messageUtilisateur });
   if (defaultMessages) {
     res.send({ messages: defaultMessages });
     return;
   }
-  let openAImessages;
+
+  let messagesIA;
   try {
-    openAImessages = await openAIChain.invoke({
-      question: userMessage,
+    messagesIA = await openAIChain.invoke({
+      question: messageUtilisateur,
       format_instructions: parser.getFormatInstructions(),
     });
-  } catch (error) {
-    openAImessages = defaultResponse;
+  } catch (Erreur) {
+    console.Erreur(`❌ Erreur GPT : ${Erreur.message}`);
+    messagesIA = defaultRéponse;
   }
-  openAImessages = await lipSync({ messages: openAImessages.messages });
-  res.send({ messages: openAImessages });
+
+  try {
+    messagesIA = await lipSync({ messages: messagesIA.messages });
+  } catch (Erreur) {
+    console.Erreur(`❌ Erreur lipSync : ${Erreur.message}`);
+  }
+
+  res.send({ messages: messagesIA });
 });
 
 app.post("/sts", async (req, res) => {
-  const base64Audio = req.body.audio;
-  const audioData = Buffer.from(base64Audio, "base64");
-  const userMessage = await convertAudioToText({ audioData });
-  let openAImessages;
+  const base64Audio = req.body.Audio;
+  const donneesAudio = Buffer.from(base64Audio, "base64");
+
+  let messageUtilisateur;
   try {
-    openAImessages = await openAIChain.invoke({
-      question: userMessage,
+    messageUtilisateur = await convertAudioToText({ donneesAudio });
+    console.log(`📝 Transcrit : ${messageUtilisateur}`);
+  } catch (Erreur) {
+    console.Erreur(`❌ Erreur Whisper : ${Erreur.message}`);
+    res.status(500).send({ Erreur: "Erreur transcription Audio" });
+    return;
+  }
+
+  let messagesIA;
+  try {
+    messagesIA = await openAIChain.invoke({
+      question: messageUtilisateur,
       format_instructions: parser.getFormatInstructions(),
     });
-  } catch (error) {
-    openAImessages = defaultResponse;
+  } catch (Erreur) {
+    console.Erreur(`❌ Erreur GPT : ${Erreur.message}`);
+    messagesIA = defaultRéponse;
   }
-  openAImessages = await lipSync({ messages: openAImessages.messages });
-  res.send({ messages: openAImessages });
+
+  try {
+    messagesIA = await lipSync({ messages: messagesIA.messages });
+  } catch (Erreur) {
+    console.Erreur(`❌ Erreur lipSync : ${Erreur.message}`);
+  }
+
+  res.send({ messages: messagesIA });
 });
 
-app.listen(port, () => {
-  console.log(`Jack are listening on port ${port}`);
-});
+(async () => {
+  const port = process.env.PORT || await getPort({ port: Array.from({ length: 100 }, (_, i) => 3000 + i) });
+  app.listen(port, () => {
+    console.log(`🚀 Jack écoute sur le port ${port}`);
+  });
+})();

@@ -1,0 +1,25 @@
+# Rapport Auto Refactor
+
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\apps\frontend\node_modules\.vite\deps\chunk-257AED43.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\apps\frontend\node_modules\.vite\deps\chunk-6R6HTBDZ.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\apps\frontend\node_modules\.vite\deps\chunk-H53D32SU.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\apps\frontend\node_modules\.vite\deps\chunk-PBNXRS3B.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\apps\frontend\node_modules\.vite\deps\leva.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\apps\frontend\node_modules\.vite\deps\react_jsx-dev-runtime.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\apps\frontend\node_modules\.vite\deps\react_jsx-runtime.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\digital-human-frontend\node_modules\.vite\deps\chunk-257AED43.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\digital-human-frontend\node_modules\.vite\deps\chunk-6R6HTBDZ.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\digital-human-frontend\node_modules\.vite\deps\chunk-H53D32SU.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\digital-human-frontend\node_modules\.vite\deps\chunk-PBNXRS3B.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\digital-human-frontend\node_modules\.vite\deps\leva.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\digital-human-frontend\node_modules\.vite\deps\react_jsx-dev-runtime.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\digital-human-frontend\node_modules\.vite\deps\react_jsx-runtime.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\jiti\dist\babel.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\rollup\dist\es\shared\node-entry.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\sucrase\dist\esm\transformers\CJSImportTransformer.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\sucrase\dist\esm\transformers\ESMImportTransformer.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\tailwindcss\src\plugin.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\tailwindcss\src\cli\init\index.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\vite\dist\node\runtime.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\vite\dist\node\chunks\dep-7WSsXf4P.js
+- ⚠️ Mélange ESModule/CommonJS détecté dans .\node_modules\vite\dist\node\chunks\dep-Glf1enhJ.js

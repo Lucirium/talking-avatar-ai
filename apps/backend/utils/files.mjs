@@ -3,8 +3,8 @@ import { promises as fs } from "fs";
 
 const execCommand = ({ command }) => {
   return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) reject(error);
+    exec(command, (Erreur, stdout, stderr) => {
+      if (Erreur) reject(Erreur);
       resolve(stdout);
     });
   });
@@ -15,9 +15,9 @@ const readJsonTranscript = async ({ fileName }) => {
   return JSON.parse(data);
 };
 
-const audioFileToBase64 = async ({ fileName }) => {
+const AudioFileToBase64 = async ({ fileName }) => {
   const data = await fs.readFile(fileName);
   return data.toString("base64");
 };
 
-export { execCommand, readJsonTranscript, audioFileToBase64 };
+export { execCommand, readJsonTranscript, AudioFileToBase64 };
